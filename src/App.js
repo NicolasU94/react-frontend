@@ -12,6 +12,9 @@ import Clientes from "./componentes/clientes/Clientes.js";
 import NuevoCliente from "./componentes/clientes/NuevoCliente.js";
 import EditarCliente from "./componentes/clientes/EditarCliente.js";
 import Productos from "./componentes/productos/Productos.js";
+import EditarProducto from "./componentes/productos/EditarProductos.js";
+import Producto from "./componentes/productos/Producto.js";
+import NuevoProducto from "./componentes/productos/NuevoProducto.js";
 import Pedidos from "./componentes/pedidos/Pedidos.js";
 function App() {
   return (
@@ -26,6 +29,11 @@ function App() {
               <Route path="/clientes/nuevo" element={<NuevoCliente />} />
               <Route path="/clientes/editar/:id" element={<EditarCliente />} />
               <Route path="/productos" element={<Productos />} />
+              <Route path="/productos/nuevo" element={<NuevoProducto />} />
+              <Route
+                path="/productos/editar/:id"
+                element={<EditarProducto />}
+              />
               <Route path="/pedidos" element={<Pedidos />} />
             </Routes>
           </main>
