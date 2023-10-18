@@ -1,5 +1,5 @@
 import React, { useState, Fragment } from "react";
-import { Navigate, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import axiosClient from "../../config/axios.js";
 import Swal from "sweetalert2";
 

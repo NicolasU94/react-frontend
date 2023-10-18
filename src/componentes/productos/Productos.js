@@ -17,7 +17,7 @@ const Productos = () => {
     };
 
     fetchProducts();
-  }, [productos]);
+  }, []);
 
   if (!productos.length) return <Spinner />;
 

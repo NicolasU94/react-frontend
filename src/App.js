@@ -12,10 +12,11 @@ import Clientes from "./componentes/clientes/Clientes.js";
 import NuevoCliente from "./componentes/clientes/NuevoCliente.js";
 import EditarCliente from "./componentes/clientes/EditarCliente.js";
 import Productos from "./componentes/productos/Productos.js";
-import EditarProducto from "./componentes/productos/EditarProductos.js";
+import EditarProducto from "./componentes/productos/EditarProducto.js";
 import Producto from "./componentes/productos/Producto.js";
 import NuevoProducto from "./componentes/productos/NuevoProducto.js";
 import Pedidos from "./componentes/pedidos/Pedidos.js";
+import NuevoPedido from "./componentes/pedidos/NuevoPedido.js";
 function App() {
   return (
     <Router>
@@ -35,6 +36,7 @@ function App() {
                 element={<EditarProducto />}
               />
               <Route path="/pedidos" element={<Pedidos />} />
+              <Route path="/pedidos/nuevo/:id" element={<NuevoPedido />} />
             </Routes>
           </main>
         </div>

@@ -39,17 +39,9 @@ const Producto = ({ producto }) => {
         {imagen ? <img src={`http://localhost:5500/${imagen}`} /> : null}
       </div>
       <div class="acciones">
-        <a href="#" class="btn btn-azul">
+        <Link to={`/productos/editar/${_id}`} className="btn btn-azul">
           <i class="fas fa-pen-alt"></i>
           Editar Producto
-        </a>
-
-        <Link
-          to={`/productos/editar/${_id}`}
-          className="btn btn-verde nvo-cliente"
-        >
-          <i className="fas fa-plus-circle"></i>
-          Nuevo Producto
         </Link>
 
         <button

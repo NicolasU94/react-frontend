@@ -18,7 +18,7 @@ const Clientes = () => {
 
   useEffect(() => {
     apiQuery();
-  }, [clients]);
+  }, []);
 
   if (!clients.length) return <Spinner />;
 
