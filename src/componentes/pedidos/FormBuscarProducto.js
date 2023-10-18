@@ -6,7 +6,7 @@ const FormBuscarProducto = (props) => {
     <form onSubmit={buscarProducto}>
       <legend>Busca un Producto y agrega una cantidad</legend>
 
-      <div class="campo">
+      <div className="campo">
         <label>Productos:</label>
         <input
           type="text"
