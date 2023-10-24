@@ -34,15 +34,4 @@ function DetallesPedido({ pedido }) {
   );
 }
 
-/*
-.map((articulo) => (
-    (
-              <li key={pedido._id}>
-                <p>Product Name</p>
-                <p>Precio: Product Price</p>
-                <p>Cantidad: {articulo.cantidad}</p>
-              </li>
-            ))}           
-            ))
-*/
 export default DetallesPedido;
