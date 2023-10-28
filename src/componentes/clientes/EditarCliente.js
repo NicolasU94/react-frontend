@@ -1,10 +1,12 @@
-import React, { Fragment, useState, useEffect } from "react";
+import React, { Fragment, useState, useEffect, useContext } from "react";
 import axiosClient from "../../config/axios.js";
 import { useNavigate, useParams } from "react-router-dom";
 import Swal from "sweetalert2";
+import { CRMContext } from "../../context/CRMContext.js";
 
 const EditarCliente = () => {
   const navigate = useNavigate();
+  const [auth, setAuth] = useContext(CRMContext);
   //Getting the ID
   const { id } = useParams();
 
@@ -17,12 +19,24 @@ const EditarCliente = () => {
   });
 
   const fetchUser = async () => {
-    const fetchedClient = await axiosClient.get(`/clientes/${id}`);
-    guardarCliente(fetchedClient.data);
+    try {
+      const fetchedClient = await axiosClient.get(`/clientes/${id}`, {
+        headers: {
+          Authorization: `Bearer ${auth.token}`,
+        },
+      });
+      guardarCliente(fetchedClient.data);
+    } catch (error) {
+      if (error.response.status === 500) navigate("/login");
+    }
   };
 
   useEffect(() => {
-    fetchUser();
+    if (auth.token !== "") {
+      fetchUser();
+    } else {
+      navigate("/login");
+    }
   }, []);
 
   const handleChange = (e) => {
@@ -34,28 +48,36 @@ const EditarCliente = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
     //Sending Request using Axios
-    axiosClient.put(`/clientes/${id}`, cliente).then((res) => {
-      console.log(res);
-      if (res.data.code === 11000) {
+    axiosClient
+      .put(`/clientes/${id}`, cliente, {
+        headers: {
+          Authorization: `Bearer ${auth.token}`,
+        },
+      })
+      .then((res) => {
         console.log(res);
-        Swal.fire({
-          type: "error",
-          title: "Hubo un error",
-          text: "El cliente ya se encuentra registrado",
-        });
-      } else {
-        Swal.fire(
-          "Exito",
-          "La informacion se actualizo correctamente",
-          "success"
-        );
-      }
+        if (res.data.code === 11000) {
+          console.log(res);
+          Swal.fire({
+            type: "error",
+            title: "Hubo un error",
+            text: "El cliente ya se encuentra registrado",
+          });
+        } else {
+          Swal.fire(
+            "Exito",
+            "La informacion se actualizo correctamente",
+            "success"
+          );
+        }
 
-      navigate("/");
-      // history.push("/");
-    });
+        navigate("/");
+        // history.push("/");
+      })
+      .catch((error) => {
+        if (error.response.status === 500) navigate("/login");
+      });
   };
 
   const validateClient = () => {
@@ -68,6 +90,9 @@ const EditarCliente = () => {
       !telefono.length;
     return validate;
   };
+
+  if (!auth.auth && localStorage.getItem("token") === auth.token)
+    navigate("/login");
 
   return (
     <Fragment>

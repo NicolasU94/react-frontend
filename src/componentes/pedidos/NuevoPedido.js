@@ -1,9 +1,10 @@
-import React, { useEffect, useState, Fragment } from "react";
+import React, { useEffect, useState, useContext, Fragment } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axiosClient from "../../config/axios.js";
 import Swal from "sweetalert2";
 import FormBuscarProducto from "./FormBuscarProducto.js";
 import FormProductoCantidad from "./FormProductoCantidad.js";
+import { CRMContext } from "../../context/CRMContext.js";
 
 const NuevoPedido = (props) => {
   const { id } = useParams();
@@ -12,15 +13,26 @@ const NuevoPedido = (props) => {
   const [search, setSearch] = useState("");
   const [products, setProducts] = useState([]);
   const [total, setTotal] = useState(0);
+  const [auth, setAuth] = useContext(CRMContext);
+
+  const fetchClientData = async () => {
+    try {
+      const myClient = await axiosClient.get(`/clientes/${id}`, {
+        headers: { Authorization: `Bearer ${auth.token}` },
+      });
+      setclient(myClient.data);
+    } catch (error) {
+      if (error.response.status === 500) navigate("/login");
+    }
+  };
 
   useEffect(() => {
-    const fetchClientData = async () => {
-      const myClient = await axiosClient.get(`/clientes/${id}`);
-      setclient(myClient.data);
-    };
-    fetchClientData();
-
-    updateTotal();
+    if (auth.token !== "") {
+      fetchClientData();
+      updateTotal();
+    } else {
+      navigate("/login");
+    }
   }, [products]);
 
   const { nombre, apellido, email, empresa } = client;
@@ -62,21 +74,27 @@ const NuevoPedido = (props) => {
 
   const searchProduct = async (e) => {
     e.preventDefault();
-    const searchResult = await axiosClient.post(
-      `/productos/busqueda/${search}`
-    );
-    if (searchResult.data[0]) {
-      let resultProd = searchResult.data[0];
+    try {
+      const searchResult = await axiosClient.post(
+        `/productos/busqueda/${search}`,
+        null,
+        { headers: { Authorization: `Bearer ${auth.token}` } }
+      );
+      if (searchResult.data[0]) {
+        let resultProd = searchResult.data[0];
 
-      resultProd.producto = searchResult.data[0]._id;
-      resultProd.cantidad = 0;
-      setProducts([...products, resultProd]);
-    } else {
-      Swal.fire({
-        type: "error",
-        title: "No Resultados",
-        text: "No hay resultados",
-      });
+        resultProd.producto = searchResult.data[0]._id;
+        resultProd.cantidad = 0;
+        setProducts([...products, resultProd]);
+      } else {
+        Swal.fire({
+          type: "error",
+          title: "No Resultados",
+          text: "No hay resultados",
+        });
+      }
+    } catch (error) {
+      if (error.response.status === 500) navigate("/login");
     }
   };
 
@@ -88,23 +106,31 @@ const NuevoPedido = (props) => {
       pedido: products,
       total: total,
     };
-    const res = await axiosClient.post("/pedidos", pedido);
-
-    if (res.status === 201) {
-      Swal.fire({
-        type: "success",
-        title: "Exito",
-        text: "El pedido fue creado exitosamente",
+    try {
+      const res = await axiosClient.post("/pedidos", pedido, {
+        headers: { Authorization: `Bearer ${auth.token}` },
       });
-    } else {
-      Swal.fire({
-        type: "error",
-        title: "Hubo un Error",
-        text: "intente nuevamente mas tarde",
-      });
+      if (res.status === 201) {
+        Swal.fire({
+          type: "success",
+          title: "Exito",
+          text: "El pedido fue creado exitosamente",
+        });
+      } else {
+        Swal.fire({
+          type: "error",
+          title: "Hubo un Error",
+          text: "intente nuevamente mas tarde",
+        });
+      }
+      navigate("/pedidos");
+    } catch (error) {
+      if (error.response.status === 500) navigate("/login");
     }
-    navigate("/pedidos");
   };
+
+  if (!auth.auth && localStorage.getItem("token") === auth.token)
+    navigate("/login");
 
   return (
     <Fragment>

@@ -1,13 +1,14 @@
-import React, { useEffect, useState, Fragment } from "react";
+import React, { useEffect, useState, useContext, Fragment } from "react";
 import axiosClient from "../../config/axios.js";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, isRouteErrorResponse } from "react-router-dom";
+import { CRMContext } from "../../context/CRMContext.js";
 import Spinner from "../layout/Spinner.js";
 import Swal from "sweetalert2";
 
 const EditarProducto = (props) => {
   const { id } = useParams();
   const navigate = useNavigate();
-
+  const [auth, setAuth] = useContext(CRMContext);
   const [producto, setProducto] = useState({
     nombre: "",
     precio: "",
@@ -20,12 +21,23 @@ const EditarProducto = (props) => {
 
   const { nombre, precio, imagen } = producto;
 
-  useEffect(() => {
-    const fetchFromApi = async () => {
-      const myProduct = await axiosClient.get(`/productos/${id}`);
+  const fetchFromApi = async () => {
+    try {
+      const myProduct = await axiosClient.get(`/productos/${id}`, {
+        headers: { Authorization: `Bearer ${auth.token}` },
+      });
       setProducto(myProduct.data);
-    };
-    fetchFromApi();
+    } catch (error) {
+      if (error.response.status === 500) navigate("/login");
+    }
+  };
+
+  useEffect(() => {
+    if (auth.token !== "") {
+      fetchFromApi();
+    } else {
+      navigate("/login");
+    }
   }, []);
 
   const editProduct = async (e) => {
@@ -40,6 +52,7 @@ const EditarProducto = (props) => {
       const res = await axiosClient.put(`/productos/${id}`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${auth.token}`,
         },
       });
       if (res.status === 200) {
@@ -48,6 +61,7 @@ const EditarProducto = (props) => {
       navigate("/productos");
     } catch (error) {
       console.log(error);
+      if (error.response.status === 500) navigate("/login");
       Swal.fire({
         type: "error",
         title: "Hubo un error",
@@ -67,6 +81,9 @@ const EditarProducto = (props) => {
     console.log(e.target.files);
     setFile(e.target.files[0]);
   };
+
+  if (!auth.auth && localStorage.getItem("token") === auth.token)
+    navigate("/login");
 
   if (!nombre) return <Spinner />;
 

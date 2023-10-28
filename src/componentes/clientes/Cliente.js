@@ -1,33 +1,51 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useContext } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import axiosClient from "../../config/axios.js";
 import Swal from "sweetalert2";
+import { CRMContext } from "../../context/CRMContext.js";
 
 const Cliente = ({ client }) => {
+  const navigate = useNavigate();
+  const [auth, setAuth] = useContext(CRMContext);
+
   const { _id, nombre, apellido, empresa, email, telefono } = client;
 
   const eliminarCliente = (id) => {
-    Swal.fire({
-      title: "Esta Seguro?",
-      text: "No sera posible revertir los cambios!",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#3085d6",
-      cancelButtonColor: "#d33",
-      confirmButtonText: "Si, Eliminar!",
-      cancelButtonText: "Cancelar",
-    }).then((result) => {
-      if (result.isConfirmed) {
-        axiosClient.delete(`/clientes/${id}`).then((res) => {
-          Swal.fire(
-            "Deleted!",
-            "El Cliente se ha borrado exitosamente",
-            "success"
-          );
-          console.log(res);
+    if (auth.token !== "") {
+      try {
+        Swal.fire({
+          title: "Esta Seguro?",
+          text: "No sera posible revertir los cambios!",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonColor: "#3085d6",
+          cancelButtonColor: "#d33",
+          confirmButtonText: "Si, Eliminar!",
+          cancelButtonText: "Cancelar",
+        }).then((result) => {
+          if (result.isConfirmed) {
+            axiosClient
+              .delete(`/clientes/${id}`, {
+                headers: {
+                  Authorization: `Bearer ${auth.token}`,
+                },
+              })
+              .then((res) => {
+                Swal.fire(
+                  "Deleted!",
+                  "El Cliente se ha borrado exitosamente",
+                  "success"
+                );
+                console.log(res);
+              });
+          }
         });
+      } catch (error) {
+        if (error.response.status === 500) navigate("/login");
       }
-    });
+    } else {
+      navigate("/login");
+    }
   };
 
   return (

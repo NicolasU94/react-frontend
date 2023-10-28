@@ -1,10 +1,15 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import axiosClient from "../../config/axios.js";
 import Swal from "sweetalert2";
 
+import { CRMContext } from "../../context/CRMContext.js";
+
 const Login = () => {
   const navigate = useNavigate();
+
+  const [auth, setAuth] = useContext(CRMContext);
+
   const [credentials, setCredentials] = useState({
     email: "",
     password: "",
@@ -24,8 +29,12 @@ const Login = () => {
       const res = await axiosClient.post("/login", credentials);
       //Extracting the Token
       const { token } = res.data;
-      //Setting the Token in localStorage
+      //Setting the Token in localStorage and in context
       localStorage.setItem("token", token);
+      setAuth({
+        token: token,
+        auth: true,
+      });
       Swal.fire("Login Correcto", "Has Iniciado Sesion", "success");
       navigate("/");
     } catch (error) {

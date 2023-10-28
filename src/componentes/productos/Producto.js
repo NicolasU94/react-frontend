@@ -1,10 +1,13 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useContext } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import axiosClient from "../../config/axios.js";
 import Swal from "sweetalert2";
+import { CRMContext } from "../../context/CRMContext.js";
 
 const Producto = ({ producto }) => {
+  const navigate = useNavigate();
   const { _id, nombre, precio, imagen } = producto;
+  const [auth, setAuth] = useContext(CRMContext);
 
   const deleteProduct = (id) => {
     Swal.fire({
@@ -18,15 +21,22 @@ const Producto = ({ producto }) => {
       cancelButtonText: "Cancelar",
     }).then((result) => {
       if (result.isConfirmed) {
-        axiosClient.delete(`/productos/${id}`).then((res) => {
-          if (res.status === 204) {
-            Swal.fire(
-              "Deleted!",
-              "El Producto se ha borrado exitosamente",
-              "success"
-            );
-          }
-        });
+        axiosClient
+          .delete(`/productos/${id}`, {
+            headers: { Authorization: `Bearer ${auth.token}` },
+          })
+          .then((res) => {
+            if (res.status === 204) {
+              Swal.fire(
+                "Deleted!",
+                "El Producto se ha borrado exitosamente",
+                "success"
+              );
+            }
+          })
+          .catch((error) => {
+            if (error.response.status === 500) navigate("/login");
+          });
       }
     });
   };

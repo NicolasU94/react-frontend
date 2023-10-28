@@ -1,11 +1,12 @@
-import React, { Fragment, useState } from "react";
+import React, { Fragment, useState, useContext } from "react";
 import axiosClient from "../../config/axios.js";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
+import { CRMContext } from "../../context/CRMContext.js";
 
 const NuevoCliente = () => {
   const navigate = useNavigate();
-
+  const [auth, setAuth] = useContext(CRMContext);
   const [cliente, guardarCliente] = useState({
     nombre: "",
     apellido: "",
@@ -16,10 +17,12 @@ const NuevoCliente = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
-    //Sending Request using Axios
     axiosClient
-      .post("/clientes", cliente)
+      .post("/clientes", cliente, {
+        headers: {
+          Authorization: `Bearer ${auth.token}`,
+        },
+      })
       .then((res) => {
         if (res.data.code === 11000) {
           console.log(res);
@@ -36,9 +39,10 @@ const NuevoCliente = () => {
         navigate("/");
         // history.push("/");
       })
-      .catch((err) => {
-        console.log(err);
+      .catch((error) => {
+        if (error.response.status === 500) navigate("/login");
       });
+    //Sending Request using Axios
   };
 
   const handleChange = (e) => {
@@ -59,6 +63,9 @@ const NuevoCliente = () => {
       !telefono.length;
     return validate;
   };
+
+  if (!auth.auth && localStorage.getItem("token") === auth.token)
+    navigate("/login");
 
   return (
     <Fragment>

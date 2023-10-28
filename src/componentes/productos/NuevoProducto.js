@@ -1,10 +1,12 @@
-import React, { useState, Fragment } from "react";
+import React, { useState, useContext, Fragment } from "react";
 import { useNavigate } from "react-router-dom";
 import axiosClient from "../../config/axios.js";
+import { CRMContext } from "../../context/CRMContext.js";
 import Swal from "sweetalert2";
 
 const NuevoProducto = () => {
   const navigate = useNavigate();
+  const [auth, setAuth] = useContext(CRMContext);
   const [producto, setProducto] = useState({
     nombre: "",
     precio: "",
@@ -36,6 +38,7 @@ const NuevoProducto = () => {
       const res = await axiosClient.post("/productos", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${auth.token}`,
         },
       });
       if (res.status === 201) {
@@ -43,7 +46,7 @@ const NuevoProducto = () => {
       }
       navigate("/productos");
     } catch (error) {
-      console.log(error);
+      if (error.response.status === 500) navigate("/login");
       Swal.fire({
         type: "error",
         title: "Hubo un error",
@@ -51,6 +54,9 @@ const NuevoProducto = () => {
       });
     }
   };
+
+  if (!auth.auth && localStorage.getItem("token") === auth.token)
+    navigate("/login");
 
   return (
     <Fragment>
