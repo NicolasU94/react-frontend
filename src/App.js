@@ -18,6 +18,7 @@ import NuevoProducto from "./componentes/productos/NuevoProducto.js";
 import Pedidos from "./componentes/pedidos/Pedidos.js";
 import NuevoPedido from "./componentes/pedidos/NuevoPedido.js";
 import Login from "./componentes/auth/Login.js";
+import Signup from "./componentes/auth/Signup.js";
 import { CRMContext, CRMProvider } from "./context/CRMContext.js";
 function App() {
   const [auth, setAuth] = useContext(CRMContext);
@@ -45,6 +46,7 @@ function App() {
                 <Route path="/pedidos" element={<Pedidos />} />
                 <Route path="/pedidos/nuevo/:id" element={<NuevoPedido />} />
                 <Route path="/login" element={<Login />} />
+                <Route path="/signup" element={<Signup />} />
               </Routes>
             </main>
           </div>

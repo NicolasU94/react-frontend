@@ -1,0 +1,17 @@
+.Login {
+margin: top 0px;
+    color: #797979;
+    font-size: 18px;
+    text-align: center;
+}
+
+.Login-Link {
+color: #3366CC;
+    cursor: pointer;
+}
+
+.error-message{
+    font-size: 16px;
+        color: red;
+        margin-left: 20px;
+}

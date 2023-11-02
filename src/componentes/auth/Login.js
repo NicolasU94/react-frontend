@@ -1,8 +1,9 @@
 import React, { useState, useContext } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import axiosClient from "../../config/axios.js";
 import Swal from "sweetalert2";
 
+import "./Login.css";
 import { CRMContext } from "../../context/CRMContext.js";
 
 const Login = () => {
@@ -42,8 +43,8 @@ const Login = () => {
       Swal.fire({
         icon: "error",
         type: "error",
-        title: "Hubo un error",
-        text: error.response.data.mensaje,
+        title: "An error Ocurred",
+        text: "There was an error please try again later",
       });
     }
   };
@@ -79,6 +80,14 @@ const Login = () => {
             className="btn btn-verde btn-block"
           />
         </form>
+        <div className="Signup">
+          <p>
+            Dont have an account?{" "}
+            <Link to={"/signup"} className="Signup-Link">
+              Click Here
+            </Link>
+          </p>
+        </div>
       </div>
     </div>
   );
