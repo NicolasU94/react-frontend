@@ -8,3 +8,31 @@ text-align: center;
     color: #3366CC;
     cursor: pointer;
 }
+
+.input-container{
+    width: 400px;
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+.input-icon{
+    width: 25px;
+    height: 25px;
+    position: absolute;
+    top:50%;
+    right: 10px;
+    transform: translateY(-50%);
+}
+.input-field{
+    padding-right: 30px;
+}
+.password-toggle-icon{
+    cursor: pointer;
+    width: 25px;
+    height: 25px;
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    transform: translateY(-50%);
+}
+

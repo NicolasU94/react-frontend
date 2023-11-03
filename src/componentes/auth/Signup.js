@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { useNavigate, Link } from "react-router-dom";
@@ -6,8 +6,16 @@ import axiosClient from "../../config/axios.js";
 import Swal from "sweetalert2";
 import "./Signup.css";
 
+//Importing Icons
+import EmailIcon from "./assets/envelope-solid.svg";
+import UserIcon from "./assets/user-solid.svg";
+import EyeSlash from "./assets/eye-slash-solid.svg";
+import EyeSolid from "./assets/eye-solid.svg";
+
 export const Signup = () => {
   const navigate = useNavigate();
+  const [showPass, setShowPass] = useState(false);
+  const [showConfirm, setShowConfirm] = useState(false);
 
   const validationSchema = Yup.object().shape({
     email: Yup.string()
@@ -27,6 +35,14 @@ export const Signup = () => {
       .oneOf([Yup.ref("password"), null], "Passwords must match")
       .required("Confirm Password is required"),
   });
+
+  const showPassword = () => {
+    setShowPass(!showPass);
+  };
+
+  const showConfirmPass = () => {
+    setShowConfirm(!showConfirm);
+  };
 
   const processSignup = async (values) => {
     const { email, password, username } = values;
@@ -80,11 +96,18 @@ export const Signup = () => {
             <Form>
               <div className="campo">
                 <label>Email</label>
-                <Field
-                  type="text"
-                  name="email"
-                  placeholder="Enter your email"
-                />
+                <div className="input-container">
+                  <Field
+                    type="text"
+                    name="email"
+                    placeholder="Enter your email"
+                  />
+                  <img
+                    src={EmailIcon}
+                    alt="Email Icon"
+                    className="input-icon"
+                  />
+                </div>
                 <ErrorMessage
                   name="email"
                   component="div"
@@ -94,11 +117,14 @@ export const Signup = () => {
 
               <div className="campo">
                 <label>Username</label>
-                <Field
-                  type="text"
-                  name="username"
-                  placeholder="Enter your username"
-                />
+                <div className="input-container">
+                  <Field
+                    type="text"
+                    name="username"
+                    placeholder="Enter your username"
+                  />
+                  <img src={UserIcon} alt="User Icon" className="input-icon" />
+                </div>
                 <ErrorMessage
                   name="username"
                   component="div"
@@ -108,7 +134,19 @@ export const Signup = () => {
 
               <div className="campo">
                 <label>Password</label>
-                <Field type="password" name="password" placeholder="Password" />
+                <div className="input-container">
+                  <Field
+                    type={showPass ? "text" : "password"}
+                    name="password"
+                    placeholder="Password"
+                  />
+                  <img
+                    src={showPass ? EyeSlash : EyeSolid}
+                    alt={showPass ? "Hide" : "Show"}
+                    onClick={showPassword}
+                    className="password-toggle-icon"
+                  />
+                </div>
                 <ErrorMessage
                   name="password"
                   component="div"
@@ -118,12 +156,19 @@ export const Signup = () => {
 
               <div className="campo">
                 <label>Confirm Password</label>
-
-                <Field
-                  type="password"
-                  name="confirmPass"
-                  placeholder="Re-enter Password"
-                />
+                <div className="input-container">
+                  <Field
+                    type={showConfirm ? "text" : "password"}
+                    name="confirmPass"
+                    placeholder="Re-enter Password"
+                  />
+                  <img
+                    src={showConfirm ? EyeSlash : EyeSolid}
+                    alt={showConfirm ? "Hide" : "Show"}
+                    onClick={showConfirmPass}
+                    className="password-toggle-icon"
+                  />
+                </div>
                 <ErrorMessage
                   name="confirmPass"
                   component="div"
