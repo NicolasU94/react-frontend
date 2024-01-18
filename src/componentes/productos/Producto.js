@@ -4,9 +4,9 @@ import axiosClient from "../../config/axios.js";
 import Swal from "sweetalert2";
 import { CRMContext } from "../../context/CRMContext.js";
 
-const Producto = ({ producto }) => {
+const Producto = ({ producto, onDelete }) => {
   const navigate = useNavigate();
-  const { _id, nombre, precio, imagen } = producto;
+  const { _id, name, price, imagen } = producto;
   const [auth, setAuth] = useContext(CRMContext);
 
   const deleteProduct = (id) => {
@@ -22,7 +22,7 @@ const Producto = ({ producto }) => {
     }).then((result) => {
       if (result.isConfirmed) {
         axiosClient
-          .delete(`/productos/${id}`, {
+          .delete(`/products/${id}`, {
             headers: { Authorization: `Bearer ${auth.token}` },
           })
           .then((res) => {
@@ -37,6 +37,7 @@ const Producto = ({ producto }) => {
           .catch((error) => {
             if (error.response.status === 500) navigate("/login");
           });
+        onDelete && onDelete();
       }
     });
   };
@@ -44,8 +45,8 @@ const Producto = ({ producto }) => {
   return (
     <li class="producto">
       <div class="info-producto">
-        <p class="nombre">{nombre}</p>
-        <p class="precio">${precio} </p>
+        <p class="nombre">{name}</p>
+        <p class="precio">${price} </p>
         {imagen ? <img src={`http://localhost:5500/${imagen}`} /> : null}
       </div>
       <div class="acciones">

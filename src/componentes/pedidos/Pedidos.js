@@ -8,11 +8,12 @@ import Spinner from "../layout/Spinner.js";
 const Pedidos = () => {
   const navigate = useNavigate();
   const [pedidos, setPedidos] = useState([]);
+  const [refresh, setRefresh] = useState(false);
   const [auth, setAuth] = useContext(CRMContext);
 
   const checkApi = async () => {
     try {
-      const res = await axiosClient.get("/pedidos", {
+      const res = await axiosClient.get("/orders", {
         headers: {
           Authorization: `Bearer ${auth.token}`,
         },
@@ -29,18 +30,32 @@ const Pedidos = () => {
     } else {
       navigate("/login");
     }
-  }, []);
+  }, [refresh]);
+
+  const handleDelete = async () => {
+    try {
+      await checkApi();
+      setRefresh(true);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setRefresh(false);
+    }
+  };
 
   if (!auth.auth && localStorage.getItem("token") === auth.token)
     if (!pedidos.length) return <Spinner />;
-
   return (
     <Fragment>
       <h2>Pedidos</h2>
 
       <ul className="listado-pedidos">
         {pedidos.map((pedido) => (
-          <DetallesPedido key={pedido._id} pedido={pedido} />
+          <DetallesPedido
+            key={pedido._id}
+            pedido={pedido}
+            onDelete={handleDelete}
+          />
         ))}
       </ul>
     </Fragment>

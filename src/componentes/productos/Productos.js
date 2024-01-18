@@ -11,11 +11,12 @@ import Producto from "./Producto.js";
 const Productos = () => {
   const navigate = useNavigate();
   const [productos, setProductos] = useState([]);
+  const [refresh, setRefresh] = useState(false);
   const [auth, setAuth] = useContext(CRMContext);
 
   const fetchProducts = async () => {
     try {
-      const productsQuery = await axiosClient.get("/productos", {
+      const productsQuery = await axiosClient.get("/products", {
         headers: { Authorization: `Bearer ${auth.token}` },
       });
       setProductos(productsQuery.data);
@@ -30,7 +31,18 @@ const Productos = () => {
     } else {
       navigate("/login");
     }
-  }, []);
+  }, [refresh]);
+
+  const handleDelete = async () => {
+    try {
+      await fetchProducts();
+      setRefresh(true);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setRefresh(false);
+    }
+  };
 
   if (!auth.auth && localStorage.getItem("token") === auth.token)
     navigate("/login");
@@ -46,7 +58,11 @@ const Productos = () => {
 
       <ul className="listado-productos">
         {productos.map((producto) => (
-          <Producto key={producto._id} producto={producto} />
+          <Producto
+            key={producto._id}
+            producto={producto}
+            onDelete={handleDelete}
+          />
         ))}
       </ul>
     </Fragment>

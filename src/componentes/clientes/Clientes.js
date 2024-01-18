@@ -13,12 +13,13 @@ const Clientes = () => {
   const navigate = useNavigate();
   //Setting Up state
   const [clients, setClients] = useState([]);
+  const [refresh, setRefresh] = useState(false);
   //Setting up context
   const [auth, setAuth] = useContext(CRMContext);
 
   const apiQuery = async () => {
     try {
-      const clientesQuery = await axiosClient.get("/clientes", {
+      const clientesQuery = await axiosClient.get("/clients", {
         headers: {
           Authorization: `Bearer ${auth.token}`,
         },
@@ -34,11 +35,21 @@ const Clientes = () => {
   useEffect(() => {
     if (auth.token !== "") {
       apiQuery();
-      console.log(auth);
     } else {
       navigate("/login");
     }
-  }, []);
+  }, [refresh]);
+
+  const handleDelete = async () => {
+    try {
+      await apiQuery();
+      setRefresh(true);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setRefresh(false);
+    }
+  };
 
   if (!auth.auth && localStorage.getItem("token") === auth.token)
     navigate("/login");
@@ -56,7 +67,7 @@ const Clientes = () => {
 
       <ul className="listado-clientes">
         {clients.map((client) => (
-          <Cliente key={client._id} client={client} />
+          <Cliente key={client._id} client={client} onDelete={handleDelete} />
         ))}
       </ul>
     </Fragment>

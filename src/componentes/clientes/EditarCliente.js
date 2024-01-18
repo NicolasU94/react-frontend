@@ -11,16 +11,16 @@ const EditarCliente = () => {
   const { id } = useParams();
 
   const [cliente, guardarCliente] = useState({
-    nombre: "",
-    apellido: "",
-    empresa: "",
+    name: "",
+    lastName: "",
+    company: "",
     email: "",
-    telefono: "",
+    phone: "",
   });
 
   const fetchUser = async () => {
     try {
-      const fetchedClient = await axiosClient.get(`/clientes/${id}`, {
+      const fetchedClient = await axiosClient.get(`/clients/${id}`, {
         headers: {
           Authorization: `Bearer ${auth.token}`,
         },
@@ -50,7 +50,7 @@ const EditarCliente = () => {
     e.preventDefault();
     //Sending Request using Axios
     axiosClient
-      .put(`/clientes/${id}`, cliente, {
+      .put(`/clients/${id}`, cliente, {
         headers: {
           Authorization: `Bearer ${auth.token}`,
         },
@@ -81,13 +81,13 @@ const EditarCliente = () => {
   };
 
   const validateClient = () => {
-    const { nombre, apellido, empresa, email, telefono } = cliente;
+    const { name, lastName, company, email, phone } = cliente;
     let validate =
-      !nombre.length ||
-      !apellido.length ||
-      !empresa.length ||
+      !name.length ||
+      !lastName.length ||
+      !company.length ||
       !email.length ||
-      !telefono.length;
+      !phone.length;
     return validate;
   };
 
@@ -102,35 +102,35 @@ const EditarCliente = () => {
         <legend>Llena todos los campos</legend>
 
         <div className="campo">
-          <label>Nombre:</label>
+          <label>Name:</label>
           <input
             type="text"
-            placeholder="Nombre Cliente"
-            name="nombre"
+            placeholder="Client name"
+            name="name"
             onChange={handleChange}
-            value={cliente.nombre}
+            value={cliente.name}
           />
         </div>
 
         <div className="campo">
-          <label>Apellido:</label>
+          <label>Lastname:</label>
           <input
             type="text"
-            placeholder="Apellido Cliente"
-            name="apellido"
+            placeholder=" Client Lastname"
+            name="lastName"
             onChange={handleChange}
-            value={cliente.apellido}
+            value={cliente.lastName}
           />
         </div>
 
         <div className="campo">
-          <label>Empresa:</label>
+          <label>Company:</label>
           <input
             type="text"
-            placeholder="Empresa Cliente"
-            name="empresa"
+            placeholder="Client company"
+            name="company"
             onChange={handleChange}
-            value={cliente.empresa}
+            value={cliente.company}
           />
         </div>
 
@@ -138,7 +138,7 @@ const EditarCliente = () => {
           <label>Email:</label>
           <input
             type="email"
-            placeholder="Email Cliente"
+            placeholder="Client Email"
             name="email"
             onChange={handleChange}
             value={cliente.email}
@@ -146,13 +146,13 @@ const EditarCliente = () => {
         </div>
 
         <div className="campo">
-          <label>Teléfono:</label>
+          <label>Phone:</label>
           <input
             type="text"
-            placeholder="Teléfono Cliente"
-            name="telefono"
+            placeholder="Cliente Phone"
+            name="phone"
             onChange={handleChange}
-            value={cliente.telefono}
+            value={cliente.phone}
           />
         </div>
 
