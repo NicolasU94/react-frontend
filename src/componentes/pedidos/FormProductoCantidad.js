@@ -12,8 +12,8 @@ const FormProductoCantidad = (props) => {
   return (
     <li>
       <div className="texto-producto">
-        <p className="nombre">{producto.nombre}</p>
-        <p className="precio">${producto.precio}</p>
+        <p className="name">{producto.name}</p>
+        <p className="price">${producto.price}</p>
       </div>
       <div className="acciones">
         <div className="contenedor-cantidad">
@@ -21,7 +21,7 @@ const FormProductoCantidad = (props) => {
             className="fas fa-minus"
             onClick={() => restarProductos(index)}
           ></i>
-          <p>{producto.cantidad}</p>
+          <p>{producto.amount}</p>
           <i
             className="fas fa-plus"
             onClick={() => aumentarProductos(index)}

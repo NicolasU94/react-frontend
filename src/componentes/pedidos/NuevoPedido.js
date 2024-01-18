@@ -17,7 +17,7 @@ const NuevoPedido = (props) => {
 
   const fetchClientData = async () => {
     try {
-      const myClient = await axiosClient.get(`/clientes/${id}`, {
+      const myClient = await axiosClient.get(`/clients/${id}`, {
         headers: { Authorization: `Bearer ${auth.token}` },
       });
       setclient(myClient.data);
@@ -35,7 +35,7 @@ const NuevoPedido = (props) => {
     }
   }, [products]);
 
-  const { nombre, apellido, email, empresa } = client;
+  const { name, lastName, email, company } = client;
 
   const readSearchData = (e) => {
     setSearch(e.target.value);
@@ -44,14 +44,14 @@ const NuevoPedido = (props) => {
   const reduceProds = (i) => {
     const currentProds = [...products];
 
-    if (currentProds[i].cantidad === 0) return;
-    currentProds[i].cantidad--;
+    if (currentProds[i].amount === 0) return;
+    currentProds[i].amount--;
     setProducts(currentProds);
   };
 
   const incrementProds = (i) => {
     const currentProds = [...products];
-    currentProds[i].cantidad++;
+    currentProds[i].amount++;
     setProducts(currentProds);
   };
 
@@ -61,14 +61,12 @@ const NuevoPedido = (props) => {
       return;
     }
     let newTotal = 0;
-    products.map(
-      (producto) => (newTotal += producto.precio * producto.cantidad)
-    );
+    products.map((prod) => (newTotal += prod.price * prod.amount));
     setTotal(newTotal);
   };
 
   const eliminateProduct = (id) => {
-    const allProds = products.filter((prod) => prod.producto !== id);
+    const allProds = products.filter((prod) => prod.product !== id);
     setProducts(allProds);
   };
 
@@ -76,15 +74,16 @@ const NuevoPedido = (props) => {
     e.preventDefault();
     try {
       const searchResult = await axiosClient.post(
-        `/productos/busqueda/${search}`,
+        `/products/search/${search}`,
         null,
         { headers: { Authorization: `Bearer ${auth.token}` } }
       );
       if (searchResult.data[0]) {
         let resultProd = searchResult.data[0];
 
-        resultProd.producto = searchResult.data[0]._id;
-        resultProd.cantidad = 0;
+        resultProd.product = searchResult.data[0]._id;
+        resultProd.amount = 0;
+        console.log(resultProd);
         setProducts([...products, resultProd]);
       } else {
         Swal.fire({
@@ -101,13 +100,13 @@ const NuevoPedido = (props) => {
   const confirmOrder = async (e) => {
     e.preventDefault();
 
-    const pedido = {
-      cliente: id,
-      pedido: products,
+    const order = {
+      client: id,
+      order: products,
       total: total,
     };
     try {
-      const res = await axiosClient.post("/pedidos", pedido, {
+      const res = await axiosClient.post("/orders", order, {
         headers: { Authorization: `Bearer ${auth.token}` },
       });
       if (res.status === 201) {
@@ -117,11 +116,7 @@ const NuevoPedido = (props) => {
           text: "El pedido fue creado exitosamente",
         });
       } else {
-        Swal.fire({
-          type: "error",
-          title: "Hubo un Error",
-          text: "intente nuevamente mas tarde",
-        });
+        Swal.fire("Success", "Order was created successfully", "success");
       }
       navigate("/pedidos");
     } catch (error) {
@@ -137,10 +132,10 @@ const NuevoPedido = (props) => {
       <h2>Nuevo Pedido</h2>
 
       <div className="ficha-cliente">
-        <h3>Datos de Cliente</h3>
-        <p>Nombre : {nombre}</p>
-        <p>Apellido: {apellido}</p>
-        <p>Empresa: {empresa}</p>
+        <h3>Client Data</h3>
+        <p>Name : {name}</p>
+        <p>Lastname: {lastName}</p>
+        <p>Company: {company}</p>
         <p>Email: {email}</p>
       </div>
 
@@ -152,7 +147,7 @@ const NuevoPedido = (props) => {
       <ul className="resumen">
         {products.map((producto, index) => (
           <FormProductoCantidad
-            key={producto.producto}
+            key={producto.product}
             producto={producto}
             aumentarProductos={incrementProds}
             restarProductos={reduceProds}

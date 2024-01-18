@@ -10,8 +10,8 @@ const EditarProducto = (props) => {
   const navigate = useNavigate();
   const [auth, setAuth] = useContext(CRMContext);
   const [producto, setProducto] = useState({
-    nombre: "",
-    precio: "",
+    name: "",
+    price: "",
     imagen: "",
   });
 
@@ -19,11 +19,11 @@ const EditarProducto = (props) => {
 
   //De-structuring the product
 
-  const { nombre, precio, imagen } = producto;
+  const { name, price, imagen } = producto;
 
   const fetchFromApi = async () => {
     try {
-      const myProduct = await axiosClient.get(`/productos/${id}`, {
+      const myProduct = await axiosClient.get(`/products/${id}`, {
         headers: { Authorization: `Bearer ${auth.token}` },
       });
       setProducto(myProduct.data);
@@ -44,19 +44,19 @@ const EditarProducto = (props) => {
     e.preventDefault();
     const formData = new FormData();
 
-    formData.append("nombre", producto.nombre);
-    formData.append("precio", producto.precio);
+    formData.append("name", producto.name);
+    formData.append("price", producto.price);
     formData.append("imagen", file);
 
     try {
-      const res = await axiosClient.put(`/productos/${id}`, formData, {
+      const res = await axiosClient.put(`/products/${id}`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
           Authorization: `Bearer ${auth.token}`,
         },
       });
       if (res.status === 200) {
-        Swal.fire("Agregado Correctamente", res.data.mensage, "success");
+        Swal.fire("Agregado Correctamente", res.data.message, "success");
       }
       navigate("/productos");
     } catch (error) {
@@ -85,36 +85,36 @@ const EditarProducto = (props) => {
   if (!auth.auth && localStorage.getItem("token") === auth.token)
     navigate("/login");
 
-  if (!nombre) return <Spinner />;
+  if (!name) return <Spinner />;
 
   return (
     <Fragment>
-      <h2>Editar Producto</h2>
+      <h2>Edit Product</h2>
 
-      <form action="/productos" method="POST" onSubmit={editProduct}>
-        <legend>Llena todos los campos</legend>
+      <form action="/products" method="POST" onSubmit={editProduct}>
+        <legend>Fill Out all of the fields</legend>
 
         <div className="campo">
-          <label>Nombre:</label>
+          <label>name:</label>
           <input
             type="text"
-            placeholder="Nombre Producto"
-            name="nombre"
+            placeholder="Product name"
+            name="name"
             onChange={readProductInfo}
-            defaultValue={nombre}
+            defaultValue={name}
           />
         </div>
 
         <div className="campo">
-          <label>Precio:</label>
+          <label>Price:</label>
           <input
             type="number"
-            name="precio"
+            name="price"
             min="0.00"
             step="1"
-            placeholder="Precio"
+            placeholder="price"
             onChange={readProductInfo}
-            defaultValue={precio}
+            defaultValue={price}
           />
         </div>
 

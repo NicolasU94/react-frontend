@@ -8,8 +8,8 @@ const NuevoProducto = () => {
   const navigate = useNavigate();
   const [auth, setAuth] = useContext(CRMContext);
   const [producto, setProducto] = useState({
-    nombre: "",
-    precio: "",
+    name: "",
+    price: "",
   });
 
   const [file, setFile] = useState("");
@@ -30,12 +30,12 @@ const NuevoProducto = () => {
     e.preventDefault();
     const formData = new FormData();
 
-    formData.append("nombre", producto.nombre);
-    formData.append("precio", producto.precio);
+    formData.append("name", producto.name);
+    formData.append("price", producto.price);
     formData.append("imagen", file);
 
     try {
-      const res = await axiosClient.post("/productos", formData, {
+      const res = await axiosClient.post("/products", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
           Authorization: `Bearer ${auth.token}`,
@@ -62,27 +62,27 @@ const NuevoProducto = () => {
     <Fragment>
       <h2>Nuevo Producto</h2>
 
-      <form action="/productos" method="POST" onSubmit={addProduct}>
-        <legend>Llena todos los campos</legend>
+      <form action="/products" method="POST" onSubmit={addProduct}>
+        <legend>Fill Out all of the fields</legend>
 
         <div className="campo">
-          <label>Nombre:</label>
+          <label>name:</label>
           <input
             type="text"
-            placeholder="Nombre Producto"
-            name="nombre"
+            placeholder="Product name"
+            name="name"
             onChange={readProductInfo}
           />
         </div>
 
         <div className="campo">
-          <label>Precio:</label>
+          <label>Price:</label>
           <input
             type="number"
-            name="precio"
+            name="price"
             min="0.00"
             step="1"
-            placeholder="Precio"
+            placeholder="price"
             onChange={readProductInfo}
           />
         </div>
@@ -93,11 +93,7 @@ const NuevoProducto = () => {
         </div>
 
         <div className="enviar">
-          <input
-            type="submit"
-            className="btn btn-azul"
-            value="Agregar Producto"
-          />
+          <input type="submit" className="btn btn-azul" value="Add Product" />
         </div>
       </form>
     </Fragment>

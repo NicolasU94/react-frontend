@@ -4,28 +4,28 @@ import axiosClient from "../../config/axios.js";
 import Swal from "sweetalert2";
 import { CRMContext } from "../../context/CRMContext.js";
 
-const Cliente = ({ client }) => {
+const Cliente = ({ client, onDelete }) => {
   const navigate = useNavigate();
   const [auth, setAuth] = useContext(CRMContext);
 
-  const { _id, nombre, apellido, empresa, email, telefono } = client;
+  const { _id, name, lastName, company, email, phone } = client;
 
   const eliminarCliente = (id) => {
     if (auth.token !== "") {
       try {
         Swal.fire({
-          title: "Esta Seguro?",
-          text: "No sera posible revertir los cambios!",
+          title: "Are you Sure?",
+          text: "It wont be possible to revert the changes!",
           icon: "warning",
           showCancelButton: true,
           confirmButtonColor: "#3085d6",
           cancelButtonColor: "#d33",
-          confirmButtonText: "Si, Eliminar!",
-          cancelButtonText: "Cancelar",
+          confirmButtonText: "Yes, Eliminate!",
+          cancelButtonText: "Cancell",
         }).then((result) => {
           if (result.isConfirmed) {
             axiosClient
-              .delete(`/clientes/${id}`, {
+              .delete(`/clients/${id}`, {
                 headers: {
                   Authorization: `Bearer ${auth.token}`,
                 },
@@ -33,11 +33,11 @@ const Cliente = ({ client }) => {
               .then((res) => {
                 Swal.fire(
                   "Deleted!",
-                  "El Cliente se ha borrado exitosamente",
+                  "The Client was deleted successfully",
                   "success"
                 );
-                console.log(res);
               });
+            onDelete && onDelete();
           }
         });
       } catch (error) {
@@ -51,12 +51,12 @@ const Cliente = ({ client }) => {
   return (
     <li className="cliente">
       <div className="info-cliente">
-        <p className="nombre">
-          {nombre} {apellido}
+        <p className="name">
+          {name} {lastName}
         </p>
-        <p className="empresa">{empresa}</p>
+        <p className="company">{company}</p>
         <p>{email}</p>
-        <p>Tel: {telefono}</p>
+        <p>Tel: {phone}</p>
       </div>
       <div className="acciones">
         <Link to={`/clientes/editar/${_id}`} className="btn btn-azul">

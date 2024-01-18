@@ -8,17 +8,17 @@ const NuevoCliente = () => {
   const navigate = useNavigate();
   const [auth, setAuth] = useContext(CRMContext);
   const [cliente, guardarCliente] = useState({
-    nombre: "",
-    apellido: "",
-    empresa: "",
+    name: "",
+    lastName: "",
+    company: "",
     email: "",
-    telefono: "",
+    phone: "",
   });
 
   const handleSubmit = (e) => {
     e.preventDefault();
     axiosClient
-      .post("/clientes", cliente, {
+      .post("/clients", cliente, {
         headers: {
           Authorization: `Bearer ${auth.token}`,
         },
@@ -54,13 +54,13 @@ const NuevoCliente = () => {
   };
 
   const validateClient = () => {
-    const { nombre, apellido, empresa, email, telefono } = cliente;
+    const { name, lastName, company, email, phone } = cliente;
     let validate =
-      !nombre.length ||
-      !apellido.length ||
-      !empresa.length ||
+      !name.length ||
+      !lastName.length ||
+      !company.length ||
       !email.length ||
-      !telefono.length;
+      !phone.length;
     return validate;
   };
 
@@ -75,31 +75,31 @@ const NuevoCliente = () => {
         <legend>Llena todos los campos</legend>
 
         <div className="campo">
-          <label>Nombre:</label>
+          <label>Name:</label>
           <input
             type="text"
-            placeholder="Nombre Cliente"
-            name="nombre"
+            placeholder="Client name"
+            name="name"
             onChange={handleChange}
           />
         </div>
 
         <div className="campo">
-          <label>Apellido:</label>
+          <label>Lastname:</label>
           <input
             type="text"
-            placeholder="Apellido Cliente"
-            name="apellido"
+            placeholder="Client lastname"
+            name="lastName"
             onChange={handleChange}
           />
         </div>
 
         <div className="campo">
-          <label>Empresa:</label>
+          <label>Company:</label>
           <input
             type="text"
-            placeholder="Empresa Cliente"
-            name="empresa"
+            placeholder="company Cliente"
+            name="company"
             onChange={handleChange}
           />
         </div>
@@ -115,11 +115,11 @@ const NuevoCliente = () => {
         </div>
 
         <div className="campo">
-          <label>Teléfono:</label>
+          <label>Phone:</label>
           <input
             type="text"
-            placeholder="Teléfono Cliente"
-            name="telefono"
+            placeholder="Client Phone"
+            name="phone"
             onChange={handleChange}
           />
         </div>
