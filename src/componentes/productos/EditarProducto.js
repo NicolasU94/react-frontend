@@ -122,7 +122,7 @@ const EditarProducto = (props) => {
           <label>Imagen:</label>
           {imagen ? (
             <img
-              src={`http://localhost:5500/${imagen}`}
+              src={`${process.env.REACT_APP_BACKEND_URL}/${imagen}`}
               alt="imagen"
               width="300"
             ></img>

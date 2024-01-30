@@ -47,7 +47,9 @@ const Producto = ({ producto, onDelete }) => {
       <div class="info-producto">
         <p class="nombre">{name}</p>
         <p class="precio">${price} </p>
-        {imagen ? <img src={`http://localhost:5500/${imagen}`} /> : null}
+        {imagen ? (
+          <img src={`${process.env.REACT_APP_BACKEND_URL}/${imagen}`} />
+        ) : null}
       </div>
       <div class="acciones">
         <Link to={`/productos/editar/${_id}`} className="btn btn-azul">
